@@ -1,0 +1,70 @@
+---
+import type { GetStaticPaths } from 'astro'
+
+import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import { Button } from 'astro-pure/user'
+import T from '@/components/T.astro'
+import PostPreview from '@/components/pages/PostPreview.astro'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import { blogCategories } from '@/site-config'
+import {
+  categoryMessageKey,
+  getPostCategory,
+  isCategoryId,
+  UNCATEGORIZED,
+  type CategoryId
+} from '@/utils/category'
+
+export const prerender = true
+
+export const getStaticPaths = (async () => {
+  const ids: CategoryId[] = [...blogCategories, UNCATEGORIZED]
+  return ids.map((category) => ({ params: { category } }))
+}) satisfies GetStaticPaths
+
+const { category: rawCategory } = Astro.params
+const category: CategoryId = isCategoryId(rawCategory ?? '') ? rawCategory : UNCATEGORIZED
+
+const posts = sortMDByDate(await getBlogCollection()).filter(
+  (post) => getPostCategory(post.id) === category
+)
+
+const meta = {
+  description: `Posts in ${category}`,
+  title: 'Category',
+  i18nTitle: categoryMessageKey[category]
+}
+---
+
+<PageLayout {meta}>
+  <Button href='/category' variant='back'>
+    <T k='common.back' />
+  </Button>
+
+  <main class='mt-6 lg:mt-10'>
+    <div id='content-header' class='animate'>
+      <h1 class='mb-6 text-3xl font-medium'>
+        <T k={categoryMessageKey[category]} />
+      </h1>
+      <p class='mb-6 text-muted-foreground'>
+        <T k='blog.postCount' params={{ n: posts.length }} />
+      </p>
+    </div>
+
+    <section id='content' class='animate'>
+      {
+        posts.length === 0 ? (
+          <p>
+            <T k='category.empty' />
+          </p>
+        ) : (
+          <ul class='flex flex-col gap-y-3 text-start'>
+            {posts.map((post) => (
+              <PostPreview post={post} detailed />
+            ))}
+          </ul>
+        )
+      }
+    </section>
+  </main>
+</PageLayout>

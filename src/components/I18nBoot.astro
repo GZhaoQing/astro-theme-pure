@@ -1,0 +1,217 @@
+---
+import { flatLocales, type Locale } from '@/i18n'
+
+interface Props {
+  defaultLocale: Locale
+}
+
+const { defaultLocale } = Astro.props
+---
+
+<style is:global>
+  html:not([data-locale='zh']) [data-locale-label='zh'] {
+    display: none;
+  }
+  html[data-locale='zh'] [data-locale-label='en'] {
+    display: none;
+  }
+  html[data-locale-pending] {
+    visibility: hidden;
+  }
+</style>
+
+{/* Runs before fonts/CSS so data-locale is set prior to first paint. */}
+<script is:inline define:vars={{ defaultLocale }}>
+  ;(function () {
+    var locale = defaultLocale
+    var pending = false
+    try {
+      var stored = localStorage.getItem('locale')
+      if (stored === 'zh' || stored === 'en') locale = stored
+      else {
+        var match = document.cookie.match(/(?:^|; )locale=(zh|en)(?:;|$)/)
+        if (match) locale = match[1]
+        else {
+          var geo = document.cookie.match(/(?:^|; )locale-geo=(zh|en)(?:;|$)/)
+          if (geo) locale = geo[1]
+          else pending = true
+        }
+      }
+    } catch (e) {}
+    document.documentElement.setAttribute('data-locale', locale)
+    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en-US'
+    if (pending) {
+      document.documentElement.setAttribute('data-locale-pending', '')
+      window.__pureGeoLocale = fetch('/api/geo-locale').then(function (r) {
+        return r.json()
+      })
+    }
+  })()
+</script>
+
+<script is:inline define:vars={{ i18nDicts: flatLocales }}>
+  ;(function () {
+    function interpolate(template, params) {
+      if (!params) return template
+      return template.replace(/\{(\w+)\}/g, function (_, name) {
+        return params[name] !== undefined ? String(params[name]) : '{' + name + '}'
+      })
+    }
+    function readLocale() {
+      var stored
+      try {
+        stored = localStorage.getItem('locale')
+      } catch (e) {}
+      if (stored === 'zh' || stored === 'en') return stored
+      var fromDom = document.documentElement.getAttribute('data-locale')
+      if (fromDom === 'zh' || fromDom === 'en') return fromDom
+      var match = document.cookie.match(/(?:^|; )locale=(zh|en)(?:;|$)/)
+      return match ? match[1] : 'en'
+    }
+    function persist(locale) {
+      try {
+        localStorage.setItem('locale', locale)
+      } catch (e) {}
+      document.cookie = 'locale=' + locale + '; path=/; max-age=31536000; SameSite=Lax'
+    }
+    function hasUserLocale() {
+      try {
+        var stored = localStorage.getItem('locale')
+        if (stored === 'zh' || stored === 'en') return true
+      } catch (e) {}
+      return /(?:^|; )locale=(zh|en)(?:;|$)/.test(document.cookie)
+    }
+    function persistGeo(locale) {
+      document.cookie = 'locale-geo=' + locale + '; path=/; max-age=604800; SameSite=Lax'
+    }
+    function clearPending() {
+      document.documentElement.removeAttribute('data-locale-pending')
+    }
+    function translateEl(el) {
+      var key = el.getAttribute('data-i18n')
+      var dict = i18nDicts[document.documentElement.getAttribute('data-locale')] || i18nDicts.en
+      if (!key || dict[key] === undefined) return
+      var params
+      var rawParams = el.getAttribute('data-i18n-params')
+      if (rawParams) {
+        try {
+          params = JSON.parse(rawParams)
+        } catch (e) {}
+      }
+      var text = interpolate(dict[key], params)
+      var attr = el.getAttribute('data-i18n-attr')
+      if (attr) el.setAttribute(attr, text)
+      else el.textContent = text
+    }
+    function applyTitle() {
+      var locale = document.documentElement.getAttribute('data-locale')
+      var dict = i18nDicts[locale] || i18nDicts.en
+      var titleEl = document.querySelector('meta[name="i18n-title"]')
+      var titleKey = titleEl && titleEl.getAttribute('content')
+      if (!titleKey || !dict[titleKey]) return
+      var brand = document.querySelector('meta[property="og:site_name"]')
+      var delimEl = document.querySelector('meta[name="i18n-delimiter"]')
+      var delimiter = (delimEl && delimEl.getAttribute('content')) || '•'
+      var brandText = brand && brand.getAttribute('content')
+      document.title = brandText
+        ? dict[titleKey] + ' ' + delimiter + ' ' + brandText
+        : dict[titleKey]
+    }
+    function applyI18n() {
+      var nodes = document.querySelectorAll('[data-i18n]')
+      for (var i = 0; i < nodes.length; i++) translateEl(nodes[i])
+      applyTitle()
+    }
+    function applyStoredLocale() {
+      var locale = readLocale()
+      document.documentElement.setAttribute('data-locale', locale)
+      document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en-US'
+      applyI18n()
+    }
+    function resolveGeo() {
+      if (!document.documentElement.hasAttribute('data-locale-pending')) return
+      var geoPromise = window.__pureGeoLocale
+      if (!geoPromise) {
+        geoPromise = fetch('/api/geo-locale').then(function (r) {
+          return r.json()
+        })
+      }
+      var timer = setTimeout(clearPending, 800)
+      geoPromise
+        .then(function (data) {
+          clearTimeout(timer)
+          if (hasUserLocale()) {
+            clearPending()
+            return
+          }
+          var locale = data && data.locale
+          if (locale === 'zh' || locale === 'en') {
+            document.documentElement.setAttribute('data-locale', locale)
+            document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en-US'
+            persistGeo(locale)
+            applyI18n()
+          }
+          clearPending()
+        })
+        .catch(function () {
+          clearTimeout(timer)
+          clearPending()
+        })
+    }
+    window.__pureI18nApply = applyStoredLocale
+    resolveGeo()
+
+    var observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var added = mutations[i].addedNodes
+        for (var j = 0; j < added.length; j++) {
+          var node = added[j]
+          if (!node || node.nodeType !== 1) continue
+          if (node.hasAttribute && node.hasAttribute('data-i18n')) translateEl(node)
+          if (node.querySelectorAll) {
+            var nested = node.querySelectorAll('[data-i18n]')
+            for (var k = 0; k < nested.length; k++) translateEl(nested[k])
+          }
+        }
+      }
+    })
+    observer.observe(document.documentElement, { childList: true, subtree: true })
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        applyStoredLocale()
+        observer.disconnect()
+      })
+    } else {
+      applyStoredLocale()
+      observer.disconnect()
+    }
+
+    if (!window.__pureI18nBound) {
+      window.__pureI18nBound = true
+      document.addEventListener('astro:page-load', applyStoredLocale)
+      document.addEventListener('astro:after-swap', applyStoredLocale)
+      document.addEventListener('prerenderingchange', applyStoredLocale)
+      window.addEventListener('pageshow', applyStoredLocale)
+      document.addEventListener('click', function (e) {
+        var target = e.target
+        if (target && target.nodeType !== 1) target = target.parentElement
+        if (!target || !target.closest || !target.closest('#toggleLocale')) return
+        var next = readLocale() === 'zh' ? 'en' : 'zh'
+        persist(next)
+        document.documentElement.setAttribute('data-locale', next)
+        document.documentElement.lang = next === 'zh' ? 'zh-CN' : 'en-US'
+        clearPending()
+        applyI18n()
+        var toastKey = next === 'zh' ? 'toast.localeZh' : 'toast.localeEn'
+        var dict = i18nDicts[next] || i18nDicts.en
+        requestAnimationFrame(function () {
+          document.dispatchEvent(new CustomEvent('locale-change', { detail: { locale: next } }))
+          document.dispatchEvent(
+            new CustomEvent('toast', { detail: { message: dict[toastKey] || toastKey } })
+          )
+        })
+      })
+    }
+  })()
+</script>

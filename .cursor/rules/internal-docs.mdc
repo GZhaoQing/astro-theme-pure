@@ -1,0 +1,12 @@
+---
+description: Internal notes belong in internal/, not on the public site.
+alwaysApply: true
+---
+
+# Internal docs
+
+Ops notes, deploy checklists, OAuth steps, and other non-public writing go in `internal/` as plain Markdown.
+
+Do not put them in `src/content/docs/`, `src/content/blog/`, `src/pages/`, or `public/`. Those paths are published. `draft: true` still leaves the file in the public content tree; use `internal/` instead.
+
+Do not import `astro-pure/user` MDX components in `internal/` — that folder is not compiled by Astro.

@@ -1,0 +1,33 @@
+---
+import T from '@/components/T.astro'
+import type { MessageKey } from '@/i18n'
+
+type PaginationLink = {
+  url: string
+  i18n: MessageKey
+}
+
+interface Props {
+  nextUrl?: PaginationLink
+  prevUrl?: PaginationLink
+}
+
+const { nextUrl, prevUrl } = Astro.props
+---
+
+{
+  (prevUrl || nextUrl) && (
+    <nav class='mt-4 flex items-center gap-x-4 sm:mt-6'>
+      {prevUrl && (
+        <a class='me-auto py-2' data-astro-prefetch href={prevUrl.url}>
+          <T k={prevUrl.i18n} />
+        </a>
+      )}
+      {nextUrl && (
+        <a class='ms-auto py-2' data-astro-prefetch href={nextUrl.url}>
+          <T k={nextUrl.i18n} />
+        </a>
+      )}
+    </nav>
+  )
+}

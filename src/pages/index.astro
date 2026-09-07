@@ -2,13 +2,13 @@
 import { Image } from 'astro:assets'
 
 import { Quote } from 'astro-pure/advanced'
-import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
-import { Button, Card, Icon, Label } from 'astro-pure/user'
+import { Button, Icon } from 'astro-pure/user'
+import T from '@/components/T.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
+import PostPreview from '@/components/pages/PostPreview.astro'
 import config from '@/site-config'
 
 const languages = ['Html', 'JavaScript', 'CSS', 'Shell']
@@ -29,7 +29,7 @@ if (!images[imagePath])
   )
 ---
 
-<PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
+<PageLayout meta={{ title: 'Home', i18nTitle: 'page.home' }} highlightColor='#659EB9'>
   <main class='flex w-full flex-col items-center'>
     <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
       <Image
@@ -43,17 +43,18 @@ if (!images[imagePath])
       <div class='flex flex-col items-center gap-y-4'>
         <h1 class='text-3xl font-medium'>{config.author}</h1>
         <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='Somewhere'>
-            <Icon name='location' class='size-5' slot='icon' />
-          </Label>
-          <Label
-            title='Source code'
-            as='a'
+          <div class='flex flex-row items-center justify-center gap-x-2'>
+            <Icon name='location' class='size-5' />
+            <T k='home.somewhere' />
+          </div>
+          <a
+            class='flex flex-row items-center justify-center gap-x-2 hover:opacity-75 transition-all'
             href='https://github.com/cworld1/astro-theme-pure'
             target='_blank'
           >
-            <Icon name='github' class='size-5' slot='icon' />
-          </Label>
+            <Icon name='github' class='size-5' />
+            <T k='home.sourceCode' />
+          </a>
         </div>
       </div>
 
@@ -69,23 +70,29 @@ if (!images[imagePath])
           ></span>
           <span class='size-2 rounded-full bg-green-400'></span>
         </span>
-        <p class='font-medium text-muted-foreground'>Get Template</p>
+        <p class='font-medium text-muted-foreground'>
+          <T k='home.getTemplate' />
+        </p>
       </a>
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
-      <Section title='About'>
+      <Section>
+        <T k='home.about' slot='heading' />
         <p class='text-muted-foreground'>Developer / Designer</p>
         <p class='text-muted-foreground'>
           Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione
           indoctum dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel,
           at eum oratio possit voluptatum.
         </p>
-        <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
+        <Button class='w-fit self-end' href='/about' variant='ahead'>
+          <T k='home.moreAbout' />
+        </Button>
       </Section>
       {
         allPostsByDate.length > 0 && (
-          <Section title='Posts'>
+          <Section>
+            <T k='home.posts' slot='heading' />
             <ul class='flex flex-col gap-y-1.5 sm:gap-y-2'>
               {allPostsByDate.map((p) => (
                 <li class='flex flex-col gap-x-2 sm:flex-row'>
@@ -93,7 +100,9 @@ if (!images[imagePath])
                 </li>
               ))}
             </ul>
-            <Button title='More posts' class='w-fit self-end' href='/blog' variant='ahead' />
+            <Button class='w-fit self-end' href='/blog' variant='ahead'>
+              <T k='home.morePosts' />
+            </Button>
           </Section>
         )
       }
@@ -127,7 +136,9 @@ if (!images[imagePath])
       />
     </Section> */
       }
-      <Section title='Education'>
+      {
+        /* <Section>
+        <T k='home.education' slot='heading' />
         <Card
           as='a'
           heading='Lorem ipsum'
@@ -135,19 +146,13 @@ if (!images[imagePath])
           date='August 2021 - July 2025'
           href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
         >
-          {
-            /* <ul class='ms-4 list-disc text-muted-foreground'>
-          <li>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            molestiae laboriosam pariatur!
-          </li>
-          <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-        </ul> */
-          }
         </Card>
-      </Section>
+      </Section> */
+      }
 
-      <Section title='Website List'>
+      {
+        /* <Section>
+        <T k='home.websiteList' slot='heading' />
         <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
           <ProjectCard
             href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
@@ -176,7 +181,8 @@ if (!images[imagePath])
         </div>
       </Section>
 
-      <Section title='Certifications'>
+      <Section>
+        <T k='home.certifications' slot='heading' />
         <Card
           as='a'
           heading='Lorem ipsum'
@@ -184,12 +190,20 @@ if (!images[imagePath])
           date='July 2024'
           href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
         />
-      </Section>
+      </Section> */
+      }
 
-      <Section title='Skills'>
-        <SkillLayout title='Languages' skills={languages} />
-        <SkillLayout title='Frontend' skills={frontend} />
-        <SkillLayout title='Backend' skills={backend} />
+      <Section>
+        <T k='home.skills' slot='heading' />
+        <SkillLayout skills={languages}>
+          <T k='home.languages' slot='heading' />
+        </SkillLayout>
+        <SkillLayout skills={frontend}>
+          <T k='home.frontend' slot='heading' />
+        </SkillLayout>
+        <SkillLayout skills={backend}>
+          <T k='home.backend' slot='heading' />
+        </SkillLayout>
       </Section>
     </div>
     <Quote class='mt-12' />

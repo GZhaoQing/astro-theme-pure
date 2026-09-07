@@ -1,7 +1,8 @@
 ---
-import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, groupCollectionsByYear, sortMDByDate } from 'astro-pure/server'
 import { Button } from 'astro-pure/user'
+import T from '@/components/T.astro'
+import PostPreview from '@/components/pages/PostPreview.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
 
 export const prerender = true
@@ -12,21 +13,30 @@ const allPostsByYear = groupCollectionsByYear(allPostsByDate)
 
 const meta = {
   description: 'A list of all the years of creating my posts',
-  title: 'Archives'
+  title: 'Archives',
+  i18nTitle: 'page.archives' as const
 }
 ---
 
 <PageLayout {meta}>
-  <Button title='Back' href='/blog' variant='back' />
+  <Button href='/blog' variant='back'>
+    <T k='common.back' />
+  </Button>
 
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Archives</h1>
+      <h1 class='mb-6 text-3xl font-medium'>
+        <T k='page.archives' />
+      </h1>
     </div>
 
-    {allPosts.length === 0 && <p>No posts yet.</p>}
+    {allPosts.length === 0 && (
+      <p>
+        <T k='blog.noPosts' />
+      </p>
+    )}
 
-    <section id='content' class='animate' aria-label='Blog post list'>
+    <section id='content' class='animate'>
       {
         allPostsByYear.map(([year, posts]) => (
           <div class='relative mt-20'>
@@ -37,7 +47,7 @@ const meta = {
               <samp>{year}</samp>
             </h2>
             <p class='px-5 text-muted-foreground'>
-              {posts.length} post{posts.length > 1 && 's'}
+              <T k='blog.postCount' params={{ n: posts.length }} />
             </p>
             <ul class='flex flex-col text-start'>
               {posts.map((p) => (

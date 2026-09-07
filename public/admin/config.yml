@@ -1,0 +1,137 @@
+# Decap CMS — https://decapcms.org/docs/configuration-options/
+# Local: bun run cms  (plus bun run dev), then open http://localhost:4321/admin
+# Production: GitHub OAuth App callback = {site_url}/oauth/callback
+#             env: GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
+
+local_backend: true
+
+backend:
+  name: github
+  repo: GZhaoQing/astro-theme-pure
+  branch: main
+  base_url: https://astro-pure.js.org
+  auth_endpoint: oauth
+
+locale: zh_Hans
+
+site_url: https://astro-pure.js.org
+display_url: https://astro-pure.js.org
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+slug:
+  encoding: unicode
+  clean_accents: true
+  sanitize_replacement: '-'
+
+# Shared frontmatter matches src/content.config.ts blog schema.
+collections:
+  - name: notes
+    label: 笔记
+    label_singular: 笔记
+    folder: src/content/blog/notes
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{slug}}'
+    preview_path: blog/notes/{{slug}}
+    summary: '{{title}}'
+    sortable_fields: [publishDate, title]
+    view_filters:
+      - { label: 草稿, field: draft, pattern: true }
+    fields: &blog_fields
+      - label: 标题
+        name: title
+        widget: string
+        pattern: ['.{1,60}', '标题不超过 60 字']
+      - label: 摘要
+        name: description
+        widget: text
+        pattern: ['.{1,160}', '摘要不超过 160 字']
+      - label: 发布日期
+        name: publishDate
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: false
+        picker_utc: true
+        default: '{{now}}'
+      - label: 更新日期
+        name: updatedDate
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: false
+        picker_utc: true
+        required: false
+      - label: 标签
+        name: tags
+        widget: list
+        required: false
+        default: []
+      - label: 语言
+        name: language
+        widget: string
+        required: false
+        default: 中文
+      - label: 作者
+        name: author
+        widget: string
+        required: false
+        hint: 留空则使用站点默认作者（GZQ）
+      - label: 草稿
+        name: draft
+        widget: boolean
+        default: false
+        hint: 生产环境构建会隐藏草稿
+      - label: 评论
+        name: comment
+        widget: boolean
+        default: true
+      - label: 正文
+        name: body
+        widget: markdown
+
+  - name: skills
+    label: 技能
+    label_singular: 文章
+    folder: src/content/blog/skills
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{slug}}'
+    preview_path: blog/skills/{{slug}}
+    summary: '{{title}}'
+    sortable_fields: [publishDate, title]
+    view_filters:
+      - { label: 草稿, field: draft, pattern: true }
+    fields: *blog_fields
+
+  - name: reading
+    label: 阅读
+    label_singular: 笔记
+    folder: src/content/blog/reading
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{slug}}'
+    preview_path: blog/reading/{{slug}}
+    summary: '{{title}}'
+    sortable_fields: [publishDate, title]
+    view_filters:
+      - { label: 草稿, field: draft, pattern: true }
+    fields: *blog_fields
+
+  - name: life
+    label: 生活
+    label_singular: 随笔
+    folder: src/content/blog/life
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{slug}}'
+    preview_path: blog/life/{{slug}}
+    summary: '{{title}}'
+    sortable_fields: [publishDate, title]
+    view_filters:
+      - { label: 草稿, field: draft, pattern: true }
+    fields: *blog_fields

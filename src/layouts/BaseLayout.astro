@@ -1,30 +1,36 @@
 ---
-import { Footer, Header, ThemeProvider } from 'astro-pure/components/basic'
+import { ThemeProvider } from 'astro-pure/components/basic'
 import type { SiteMeta } from 'astro-pure/types'
 import BaseHead from '@/components/BaseHead.astro'
+import Footer from '@/components/Footer.astro'
+import Header from '@/components/Header.astro'
+import I18nBoot from '@/components/I18nBoot.astro'
+import { localeFromLang, type MessageKey } from '@/i18n'
 import config from '@/site-config'
 
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseLayout /> component.
 import '@/assets/styles/global.css'
 import '@/assets/styles/app.css'
 
 interface Props {
-  meta: SiteMeta
+  meta: SiteMeta & { i18nTitle?: MessageKey }
   highlightColor?: string
 }
 
 const {
-  meta: { articleDate, description = config.description, ogImage, title },
+  meta: { articleDate, description = config.description, ogImage, title, i18nTitle },
   highlightColor,
   ...props
 } = Astro.props
+
+const defaultLocale = localeFromLang(config.locale?.lang)
 ---
 
 <html lang={config.locale.lang}>
   <head>
-    <BaseHead {articleDate} {description} {ogImage} {title} />
+    <meta charset='utf-8' />
+    <I18nBoot defaultLocale={defaultLocale} />
     <ThemeProvider />
+    <BaseHead {articleDate} {description} {ogImage} {title} {i18nTitle} />
   </head>
 
   <body class='flex justify-center bg-background text-foreground' {...props}>
@@ -42,6 +48,9 @@ const {
       class='w-full max-w-[70rem] min-h-[100dvh] flex flex-col justify-between'
     >
       <Header />
+      <script is:inline>
+        window.__pureI18nApply && window.__pureI18nApply()
+      </script>
       <div class='flex-1 w-full'>
         <slot />
       </div>

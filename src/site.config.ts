@@ -1,11 +1,29 @@
 import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/types'
 
+import { en } from './i18n/en'
+import type { MessageKey } from './i18n/types'
+
+export const headerMenu = [
+  { i18n: 'nav.blog', link: '/blog' },
+  { i18n: 'nav.category', link: '/category' },
+  { i18n: 'nav.about', link: '/about' }
+] as const satisfies { i18n: MessageKey; link: string }[]
+
+/** Writing folders under src/content/blog/. Used as public categories. */
+export const blogCategories = ['notes', 'skills', 'reading', 'life'] as const
+
+export type BlogCategoryId = (typeof blogCategories)[number]
+
+function tEn(key: MessageKey): string {
+  return key.split('.').reduce((obj: unknown, part) => (obj as Record<string, unknown>)?.[part], en) as string
+}
+
 export const theme: ThemeUserConfig = {
   // [Basic]
   /** Title for your website. Will be used in metadata and as browser tab title. */
-  title: 'Astro Theme Pure',
+  title: 'GZQ\'s Place',
   /** Will be used in index page & copyright declaration */
-  author: 'Pure Lab',
+  author: 'GZQ',
   /** Description metadata for your website. Can be used in page metadata. */
   description: 'Stay hungry, stay foolish',
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
@@ -47,13 +65,10 @@ export const theme: ThemeUserConfig = {
 
   /** Configure the header of your site. */
   header: {
-    menu: [
-      { title: 'Blog', link: '/blog' },
-      { title: 'Docs', link: '/docs' },
-      { title: 'Projects', link: '/projects' },
-      { title: 'Links', link: '/links' },
-      { title: 'About', link: '/about' }
-    ]
+    menu: headerMenu.map(({ i18n, link }) => ({
+      title: tEn(i18n),
+      link
+    }))
   },
 
   /** Configure the footer of your site. */
@@ -96,7 +111,7 @@ export const theme: ThemeUserConfig = {
     blogPageSize: 8,
     /** Share buttons to show */
     // Currently support weibo, x, bluesky
-    share: ['weibo', 'x', 'bluesky']
+    share: [] //['weibo', 'x', 'bluesky']
     /** Enable image captions (default false) */
     // imageCaption: true
   }
@@ -163,7 +178,7 @@ export const integ: IntegrationUserConfig = {
   },
   // Comment system
   waline: {
-    enable: true,
+    enable: false, // disabled for now
     // Server service link
     server: 'https://astro-theme-pure-waline.arthals.ink/',
     // Show meta info for comments

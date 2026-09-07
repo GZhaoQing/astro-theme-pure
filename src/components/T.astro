@@ -1,0 +1,28 @@
+---
+import type { HTMLTag } from 'astro/types'
+
+import { localeFromLang, t, type MessageKey } from '@/i18n'
+import config from '@/site-config'
+
+interface Props {
+  k: MessageKey
+  params?: Record<string, string | number>
+  as?: HTMLTag
+  attr?: string
+  class?: string
+}
+
+const { k, params, as: Tag = 'span', attr, class: className } = Astro.props
+const locale = localeFromLang(config.locale?.lang)
+const text = t(locale, k, params)
+---
+
+<Tag
+  class={className}
+  data-i18n={k}
+  data-i18n-params={params ? JSON.stringify(params) : undefined}
+  data-i18n-attr={attr}
+  {...(attr ? { [attr]: text } : {})}
+>
+  {attr ? undefined : text}
+</Tag>

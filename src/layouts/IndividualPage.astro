@@ -5,6 +5,7 @@ import { BackToTop, TOC } from 'astro-pure/components/pages'
 import { Button, Icon } from 'astro-pure/user'
 import { cn } from 'astro-pure/utils'
 import config from 'virtual:config'
+import T from '@/components/T.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
 
 type Props = MarkdownLayoutProps<{
@@ -23,7 +24,9 @@ const socialImage = heroImage?.src ?? config.socialCard
 ---
 
 <PageLayout meta={{ title, description, ogImage: socialImage }}>
-  <Button title='Back' href={back ?? '/'} variant='back' />
+  <Button href={back ?? '/'} variant='back'>
+    <T k='common.back' />
+  </Button>
   <main class='mt-6 items-start gap-x-10 md:flex lg:mt-10'>
     {
       !!headings.length && (

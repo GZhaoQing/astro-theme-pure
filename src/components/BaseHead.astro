@@ -3,11 +3,12 @@ import { Font } from 'astro:assets'
 
 import { prod } from 'astro-pure/server'
 import type { SiteMeta } from 'astro-pure/types'
-import config from 'virtual:config'
+import config from '@/site-config'
+import type { MessageKey } from '@/i18n'
 
-type Props = SiteMeta
+type Props = SiteMeta & { i18nTitle?: MessageKey }
 
-const { articleDate, description, ogImage, title } = Astro.props
+const { articleDate, description, ogImage, title, i18nTitle } = Astro.props
 
 const siteTitle = `${title} ${config.titleDelimiter} ${config.title}`
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
@@ -41,6 +42,8 @@ const socialImageURL = new URL(ogImage ? ogImage : config.socialCard, Astro.url)
 {/* Primary Meta Tags */}
 <meta content={siteTitle} name='title' />
 <meta content={description} name='description' />
+{i18nTitle && <meta name='i18n-title' content={i18nTitle} />}
+<meta name='i18n-delimiter' content={config.titleDelimiter} />
 <meta content={config.author} name='author' />
 
 {/* Theme Color */}

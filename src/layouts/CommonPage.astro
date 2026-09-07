@@ -2,31 +2,41 @@
 import type { MarkdownHeading } from 'astro'
 
 import { TOC } from 'astro-pure/components/pages'
+import T from '@/components/T.astro'
+import type { MessageKey } from '@/i18n'
+import config from '@/site-config'
 import PageLayout from '@/layouts/ContentLayout.astro'
 import { Comment, PageInfo } from '@/components/waline'
 
 interface Props {
   title: string
+  i18nTitle?: MessageKey
   headings?: MarkdownHeading[]
   view?: boolean
   comment?: boolean
 }
 
-const { title, headings, view, comment: enableComment, ...props } = Astro.props
+const { title, i18nTitle, headings, view, comment: enableComment, ...props } = Astro.props
+
+const walineOn = config.integ.waline.enable
+const showView = Boolean(view && walineOn)
+const showComment = Boolean(enableComment && walineOn)
 ---
 
-<PageLayout meta={{ title }} {...props}>
+<PageLayout meta={{ title, i18nTitle }} {...props}>
   {headings?.length && <TOC headings={headings} slot='sidebar' />}
 
   <Fragment slot='header'>
-    <h1 class='text-2xl font-medium sm:mb-2 sm:text-3xl'>{title}</h1>
-    {(view || enableComment) && <PageInfo {view} comment={enableComment} class='italic' />}
+    <h1 class='text-2xl font-medium sm:mb-2 sm:text-3xl'>
+      {i18nTitle ? <T k={i18nTitle} /> : title}
+    </h1>
+    {(showView || showComment) && <PageInfo view={showView} comment={showComment} class='italic' />}
   </Fragment>
 
   <slot />
 
   <slot name='bottom' slot='bottom'>
-    {enableComment && <Comment class='mt-3 sm:mt-6' />}
+    {showComment && <Comment class='mt-3 sm:mt-6' />}
   </slot>
 
   <slot name='bottom-sidebar' slot='bottom-sidebar' />

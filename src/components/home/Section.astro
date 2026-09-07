@@ -6,7 +6,9 @@ const { class: className, title } = Astro.props
 
 <section class={cn('flex flex-col gap-y-5 md:flex-row md:gap-y-0', className)}>
   <div class='text-xl font-medium md:min-w-36'>
-    <h2>{title}</h2>
+    <h2>
+      <slot name='heading'>{title}</slot>
+    </h2>
   </div>
   <div class='flex flex-1 flex-col gap-y-3'>
     <slot />

@@ -1,31 +1,41 @@
 ---
-import { PFSearch } from 'astro-pure/components/pages'
 import { Button } from 'astro-pure/user'
+import T from '@/components/T.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import { integ } from '@/site-config'
+import PFSearch from '@/components/pages/PFSearch.astro'
 
 const meta = {
   description: 'Search relative posts of the whole blog',
-  title: 'Search'
+  title: 'Search',
+  i18nTitle: 'page.search' as const
 }
 ---
 
 <PageLayout {meta}>
-  <Button title='Back' href='/blog' variant='back' />
+  <Button href='/blog' variant='back'>
+    <T k='common.back' />
+  </Button>
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Search</h1>
+      <h1 class='mb-6 text-3xl font-medium'>
+        <T k='page.search' />
+      </h1>
     </div>
 
     <div id='content' class='animate'>
       {
         integ.pagefind ? (
           <>
-            <p>Enter a search term or phrase to search the blog.</p>
+            <p>
+              <T k='page.searchPrompt' />
+            </p>
             <PFSearch />
           </>
         ) : (
-          <p>Pagefind is disabled.</p>
+          <p>
+            <T k='page.searchDisabled' />
+          </p>
         )
       }
     </div>

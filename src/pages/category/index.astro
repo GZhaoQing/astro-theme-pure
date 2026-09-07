@@ -1,0 +1,74 @@
+---
+import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import { Button } from 'astro-pure/user'
+import T from '@/components/T.astro'
+import PostPreview from '@/components/pages/PostPreview.astro'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import { blogCategories } from '@/site-config'
+import { categoryMessageKey, groupPostsByCategory, UNCATEGORIZED } from '@/utils/category'
+
+export const prerender = true
+
+const allPosts = sortMDByDate(await getBlogCollection())
+const grouped = groupPostsByCategory(allPosts)
+const uncategorized = grouped.get(UNCATEGORIZED) ?? []
+
+const sections = [
+  ...blogCategories.map((id) => ({ id, posts: grouped.get(id) ?? [] })),
+  ...(uncategorized.length > 0 ? [{ id: UNCATEGORIZED, posts: uncategorized }] : [])
+]
+
+const meta = {
+  description: 'Posts grouped by writing folder',
+  title: 'Category',
+  i18nTitle: 'page.category' as const
+}
+---
+
+<PageLayout {meta}>
+  <Button href='/blog' variant='back'>
+    <T k='common.back' />
+  </Button>
+
+  <main class='mt-6 lg:mt-10'>
+    <div id='content-header' class='animate'>
+      <h1 class='mb-6 text-3xl font-medium'>
+        <T k='page.category' />
+      </h1>
+    </div>
+
+    {allPosts.length === 0 && (
+      <p>
+        <T k='blog.noPosts' />
+      </p>
+    )}
+
+    <section id='content' class='animate'>
+      {
+        sections.map(({ id, posts }) => (
+          <div class='relative mt-16 first:mt-8'>
+            <h2 class='mb-1 text-2xl font-medium'>
+              <a href={`/category/${id}`} data-astro-prefetch>
+                <T k={categoryMessageKey[id]} />
+              </a>
+            </h2>
+            <p class='mb-3 text-muted-foreground'>
+              <T k='blog.postCount' params={{ n: posts.length }} />
+            </p>
+            {posts.length === 0 ? (
+              <p class='px-5 text-muted-foreground'>
+                <T k='category.empty' />
+              </p>
+            ) : (
+              <ul class='flex flex-col text-start'>
+                {posts.map((p) => (
+                  <PostPreview post={p} class='border-0 bg-transparent py-2' />
+                ))}
+              </ul>
+            )}
+          </div>
+        ))
+      }
+    </section>
+  </main>
+</PageLayout>
