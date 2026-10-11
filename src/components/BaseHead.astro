@@ -3,7 +3,7 @@ import { Font } from 'astro:assets'
 
 import { prod } from 'astro-pure/server'
 import type { SiteMeta } from 'astro-pure/types'
-import config from '@/site-config'
+import config from 'virtual:config'
 import type { MessageKey } from '@/i18n'
 
 type Props = SiteMeta & { i18nTitle?: MessageKey }
