@@ -5,6 +5,10 @@ dist/
 ### Vercel ###
 .vercel/
 
+### Cloudflare ###
+.wrangler/
+.dev.vars
+
 ### Vim ###
 [._]*.un~
 
