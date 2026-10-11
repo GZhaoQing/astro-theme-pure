@@ -45,6 +45,15 @@ export default defineConfig({
     prerenderEnvironment: 'node'
   }),
   output: 'server',
+  vite: {
+    optimizeDeps: {
+      // CommonJS packages. workerd has no `module` global, so prebundle them to ESM.
+      include: ['boolbase', 'extend', 'node-html-parser'],
+      // These import `virtual:config`, which esbuild cannot resolve. Leaving
+      // them in the dep optimizer deletes the chunk mid-request.
+      exclude: ['astro-pure/utils', 'astro-pure/components/basic']
+    }
+  },
   // Local (standalone)
   // adapter: node({ mode: 'standalone' }),
   // output: 'server',
