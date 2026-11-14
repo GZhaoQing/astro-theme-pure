@@ -71,7 +71,7 @@ export const zh = {
     empty: '这个分类还没有文章。'
   },
   home: {
-    somewhere: '某处',
+    somewhere: '郑州',
     sourceCode: '源代码',
     getTemplate: '获取模板',
     about: '关于',

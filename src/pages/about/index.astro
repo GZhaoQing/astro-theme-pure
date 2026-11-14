@@ -1,28 +1,28 @@
 ---
-import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
+import { Button, Spoiler } from 'astro-pure/user'
+// import { Collapse, Timeline } from 'astro-pure/user'
 import T from '@/components/T.astro'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
+import orcaIcon from '@/assets/tools/orca.png'
 
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
   { depth: 2, slug: 'tools', text: 'Tools' },
-  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
-  { depth: 2, slug: 'gossips', text: 'Gossips' },
-  { depth: 2, slug: 'about-blog', text: 'About Blog' }
+  { depth: 2, slug: 'social-networks', text: 'Social Networks' }
+  // { depth: 2, slug: 'gossips', text: 'Gossips' },
+  // { depth: 2, slug: 'about-blog', text: 'About Blog' }
 ]
 ---
 
 <PageLayout title='About' i18nTitle='nav.about' {headings} comment>
-  <p>Developer / Designer</p>
+  <p>Developer</p>
   <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
-    possit voluptatum.
+    I chose to be an engineer to motivate myself to be a lifelong learner. AI has replaced coding, but long live engineering. If one day I don't even need to design software, maybe I will learn to play one guitar on street. But now we are in the best era ever to build the best software. Let's do it hands-on.
   </p>
   <p>
-    Motto: Stay hungry, Stay foolish. <Spoiler>这里可以夹私货，比如为什么要演奏春日影！</Spoiler>
+    Motto: Stay hungry, stay foolish. <Spoiler>And eat well, sleep well.</Spoiler>
   </p>
   <Button class='w-fit' href='/projects#sponsorship' variant='ahead'>
     <T k='about.sponsorMe' />
@@ -31,13 +31,12 @@ const headings = [
   {/* general-talk */}
   <h2 id='hobbies'>Hobbies</h2>
   <ul>
-    <li>Lorem ipsum dolor sit amet, vidit suscipit at mei.</li>
+    <li>fan of the Coach Pop and the Ginóbili-Duncan-Parker trio</li>
     <li>
-      Quem denique mea id. Usu ei regione indoctum dissentiunt, cu meliore fuisset mei, vel quod
-      voluptua ne.
+      R&B/City-Pop/Fingerstyle
     </li>
-    <li>Ex dicat impedit mel, at eum oratio possit voluptatum.</li>
-    <li>Impetus fuisset ullamcorper pri cu, his posse iisque ad, aliquam honestatis usu id.</li>
+    <li>RTS games player since 2005</li>
+    <li>addicted to learn new things</li>
   </ul>
 
   {/* tools */}
@@ -54,22 +53,22 @@ const headings = [
         icon: import('@/assets/tools/photoshop.svg?raw')
       },
       {
-        name: 'Illustrator',
-        description: 'Vector Drawing',
-        href: 'https://www.adobe.com/products/illustrator',
-        icon: import('@/assets/tools/illustrator.svg?raw')
+        name: 'ECMAScript',
+        description: 'Language',
+        href: 'https://tc39.es/',
+        icon: import('@/assets/tools/ecmascript.svg?raw')
       },
       {
-        name: 'After Effects',
-        description: 'Motion Graphics',
-        href: 'https://www.adobe.com/products/aftereffects',
-        icon: import('@/assets/tools/aftereffects.svg?raw')
+        name: 'Figma',
+        description: 'UI Design',
+        href: 'https://www.figma.com/',
+        icon: import('@/assets/tools/figma.svg?raw')
       },
       {
-        name: 'Premiere Pro',
-        description: 'Video Editing',
-        href: 'https://www.adobe.com/products/premiere',
-        icon: import('@/assets/tools/premiere.svg?raw')
+        name: 'Canva',
+        description: 'Graphic Design',
+        href: 'https://www.canva.com/',
+        icon: import('@/assets/tools/canva.svg?raw')
       }
     ]}
   />
@@ -84,16 +83,16 @@ const headings = [
         icon: import('@/assets/tools/chrome.svg?raw')
       },
       {
-        name: 'Firefox',
-        description: 'Browser',
-        href: 'https://www.mozilla.org/en-US/firefox',
-        icon: import('@/assets/tools/firefox.svg?raw')
+        name: 'Typeless',
+        description: 'Voice Dictation',
+        href: 'https://www.typeless.com/',
+        icon: import('@/assets/tools/typeless.svg?raw')
       },
       {
-        name: 'Notion',
-        description: 'Note Taking',
-        href: 'https://www.notion.so/',
-        icon: import('@/assets/tools/notion.svg?raw')
+        name: 'SiYuan',
+        description: 'Note',
+        href: 'https://b3log.org/siyuan/',
+        icon: import('@/assets/tools/siyuan.svg?raw')
       },
       {
         name: 'Typora',
@@ -108,22 +107,22 @@ const headings = [
     title='Development'
     tools={[
       {
-        name: 'VS Code',
+        name: 'Cursor',
         description: 'IDE',
-        href: 'https://code.visualstudio.com/',
-        icon: import('@/assets/tools/vscode.svg?raw')
+        href: 'https://cursor.com/',
+        icon: import('@/assets/tools/cursor.svg?raw')
       },
       {
-        name: 'Neovim',
-        description: 'IDE',
-        href: 'https://neovim.io/',
-        icon: import('@/assets/tools/neovim.svg?raw')
+        name: 'Pi',
+        description: 'Coding Agent',
+        href: 'https://pi.dev/',
+        icon: import('@/assets/tools/pi.svg?raw')
       },
       {
-        name: 'Sublime Text',
-        description: 'IDE',
-        href: 'https://www.sublimetext.com/',
-        icon: import('@/assets/tools/sublime.svg?raw')
+        name: 'Orca',
+        description: 'ADE',
+        href: 'https://orca.dev/',
+        icon: orcaIcon
       }
     ]}
   />
@@ -132,10 +131,10 @@ const headings = [
     title='Environment'
     tools={[
       {
-        name: 'Arch Linux',
-        description: 'Linux Distribution',
-        href: 'https://archlinux.org/',
-        icon: import('@/assets/tools/archlinux.svg?raw')
+        name: 'Android',
+        description: 'Mobile OS',
+        href: 'https://www.android.com/',
+        icon: import('@/assets/tools/android.svg?raw')
       },
       {
         name: 'Ubuntu 24.04 LTS',
@@ -145,7 +144,7 @@ const headings = [
       },
       {
         name: 'MacOS Tahoe',
-        description: 'MacBook Air',
+        description: 'MacBook Pro',
         href: 'https://www.apple.com/macos/',
         icon: import('@/assets/tools/apple.svg?raw')
       },
@@ -161,46 +160,38 @@ const headings = [
   {/* social-networks */}
   <h2 id='social-networks'>Social Networks</h2>
   <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne.
+    
   </p>
   <Substats
     stats={[
       {
         platform: 'GitHub',
         icon: 'github',
-        link: 'https://github.com/cworld1',
-        text: 'followers',
-        api: 'github/cworld1'
-      },
-      {
-        platform: 'Telegram',
-        icon: 'telegram',
-        color: '#2ca5e0',
-        link: 'https://t.me/cworld0_cn',
-        text: 'subscribers',
-        api: 'telegram/cworld0_cn'
+        link: 'https://github.com/GZhaoQing',
+        text: 'stars',
+        api: 'github/GZhaoQing'
       },
       {
         platform: 'Steam',
         icon: 'steam',
         color: '#50769d',
-        link: 'https://steamcommunity.com/id/cworld',
+        link: 'https://steamcommunity.com/id/ufocm/',
         text: 'games',
-        api: 'steamgames/76561199021278120'
+        api: 'steamgames/76561198157638562'
       }
     ]}
   />
 
-  {/* gossips */}
+  {/* gossips（暂不使用，隐藏）
   <h2 id='gossips'>Gossips</h2>
   <Collapse title='Lorem ipsum'>
     Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
     dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
     possit voluptatum.
   </Collapse>
+  */}
 
-  {/* about-blog */}
+  {/* about-blog（暂不使用，隐藏）
   <h2 id='about-blog'>About Blog</h2>
   <p>Website history:</p>
   <Timeline
@@ -250,4 +241,5 @@ const headings = [
       >
     </li>
   </ul>
+  */}
 </PageLayout>

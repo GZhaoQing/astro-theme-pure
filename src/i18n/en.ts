@@ -69,7 +69,7 @@ export const en = {
     empty: 'No posts in this category.'
   },
   home: {
-    somewhere: 'Somewhere',
+    somewhere: 'Zhengzhou',
     sourceCode: 'Source code',
     getTemplate: 'Get Template',
     about: 'About',
